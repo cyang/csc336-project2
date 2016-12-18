@@ -5,9 +5,14 @@ $db = new mysqli($host, $username, $password, "stockmarket");
 if ($db->connect_error) {
     die("Connection failed: " . $db->connect_error);
 } 
-$STOCK = "SET @STOCK = (SELECT * FROM STOCK)";
-$db->query($q_1);
+$STOCK_HISTORY = "SELECT * FROM STOCK_HISTORY";
 
-echo $db->query("SELECT @STOCK LIMIT 1);
+$r = $db->query($STOCK_HISTORY);
+if ($r->num_rows > 0) {
+	$row = $r->fetch_assoc();
+	echo $row["TRADE_DATE"];
+} else {
+	echo "0 results";
+}
 
 ?>
