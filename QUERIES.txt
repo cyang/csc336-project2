@@ -1,6 +1,6 @@
 1. Buy and hold selectively
 
-Get starting prices for each instrument id:
+Get starting prices and ending prices for each instrument id:
 SELECT startStock.INSTRUMENT_ID, startStock.TRADE_DATE as startDate,
 startStock.OPEN_PRICE as startPrice, endStock.TRADE_DATE as endDate,
 endStock.OPEN_PRICE as endPrice 
