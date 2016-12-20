@@ -7,6 +7,7 @@ if ($db->connect_error) {
 }
 
 // Strategy 1: Buy and hold selectively 
+echo "1. Buy and hold selectively<br><br>";
 $q_1 = "SELECT startStock.INSTRUMENT_ID, startStock.TRADE_DATE as startDate,
 startStock.OPEN_PRICE as startPrice, endStock.TRADE_DATE as endDate,
 endStock.OPEN_PRICE as endPrice 
@@ -30,6 +31,7 @@ if ($r_1->num_rows > 0) {
 	echo "0 results";
 }
 
+
 $budget = 10000.0;
 echo "Starting budget: ". $budget . "<br><br>";
 $profit = 0.0;
@@ -48,7 +50,7 @@ while ($budget > 0 and $stocksLooked <= 1000) {
 		} else { continue; }
 
 		$profit += $stockArray[$rand][1] - $stockArray[$rand][0];
-		echo "INSTRUMENT_ID: " . $rand . " | PRICE: " . $stockArray[$rand][0] . "<br>";
+		echo "INSTRUMENT_ID: " . $rand . " | START_PRICE: " . $stockArray[$rand][0] . " | END_PRICE: " . $stockArray[$rand][1] . "<br>";
 	}
 }
 
