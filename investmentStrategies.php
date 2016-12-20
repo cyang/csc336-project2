@@ -25,7 +25,7 @@ $stockArray = array();
 
 if ($r_1->num_rows > 0) {
 	while($row = $r_1->fetch_assoc()) {
-		$stockArray[$row["INSTRUMENT_ID"]] = array($row["startPrice"], $row["endPrice"], false);
+		$stockArray[$row["INSTRUMENT_ID"]] = array($row["startPrice"], $row["endPrice"]);
 	}
 } else {
 	echo "0 results";
@@ -35,23 +35,17 @@ if ($r_1->num_rows > 0) {
 $budget = 10000.0;
 echo "Starting budget: ". $budget . "<br><br>";
 $profit = 0.0;
-$stocksLooked = 0;
 
 echo "Purchased stocks: <br>";
-while ($budget > 0 and $stocksLooked <= 1000) {
+while ($budget > 0) {
 	$rand = rand(0, 999);
-	if($stockArray[$rand][2] == false) {
-		// Subtract from budget and calculate profit
-		$stockArray[$rand][2] = true;
-		$stocksLooked += 1;
- 
-		if ($budget - $stockArray[$rand][0] >=  0) {
-			$budget -= $stockArray[$rand][0];
-		} else { continue; }
+	// Subtract from budget and calculate profit
+	if ($budget - $stockArray[$rand][0] >=  0) {
+		$budget -= $stockArray[$rand][0];
+	} else { continue; }
 
-		$profit += $stockArray[$rand][1] - $stockArray[$rand][0];
-		echo "INSTRUMENT_ID: " . $rand . " | START_PRICE: " . $stockArray[$rand][0] . " | END_PRICE: " . $stockArray[$rand][1] . "<br>";
-	}
+	$profit += $stockArray[$rand][1] - $stockArray[$rand][0];
+	echo "INSTRUMENT_ID: " . $rand . " | START_PRICE: " . $stockArray[$rand][0] . " | END_PRICE: " . $stockArray[$rand][1] . "<br>";
 }
 
 echo "<br>Budget left over: " . $budget . "<br>"; 
