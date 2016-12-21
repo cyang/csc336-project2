@@ -1,0 +1,103 @@
+<?php
+require "config.php";
+// Connection
+$db = new mysqli($host, $username, $password, "stockmarket");
+if ($db->connect_error) {
+    die("Connection failed: " . $db->connect_error);
+}
+
+// Strategy 1: Buy and hold selectively
+echo "1. Calculate Averages<br><br>";
+$q_1 = "SELECT INSTRUMENT_ID, TRADE_DATE, CLOSE_PRICE FROM STOCK_HISTORY order by TRADE_DATE";
+$r_1 = $db->query($q_1);
+
+$stockArray = array();
+
+if ($r_1->num_rows > 0) {
+	while($row = $r_1->fetch_assoc()) {
+    if(gettype($stockArray[$row["INSTRUMENT_ID"]]) == gettype(array())){
+      $stockArray[$row["INSTRUMENT_ID"]][count($stockArray[$row["INSTRUMENT_ID"]])] = $row["CLOSE_PRICE"];
+    }else{
+		  $stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
+	}}
+} else {
+	echo "0 results";
+}
+
+$q_2 = "SELECT INSTRUMENT_ID, CLOSE_PRICE FROM STOCK_HISTORY WHERE TRADE_DATE = (select max(TRADE_DATE) from STOCK_HISTORY)";
+$r_2 = $db->query($q_1);
+
+$lastPrices = array();
+
+if ($r_2->num_rows > 0) {
+	while($row = $r_2->fetch_assoc()) {
+		  $stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
+	}}
+
+$cash = 10000.0;
+echo "Starting budget: ". $cash . "<br><br>";
+
+$avgArray = array();
+for($i = 0; $i < count($stockArray); $i++){
+  $priceArray = $stockArray[$i];
+  $avgInstArray = array();
+  for($day = 0; $day < count($priceArray)); $day++){
+    $day50 = array_sum(array_slice ( $priceArray, $day-51, int $length = 50 ))/50;
+    $day200 = array_sum(array_slice ( $priceArray, $day-201, int $length = 200 ))/200;
+    if($day50 > $day200){
+      $avgInstArray[$day] = array(1, $priceArray[$day]);
+    }else {
+      $avgInstArray[$day] = array(0, $priceArray[$day]);
+    }}
+  $avgArray[$i] = $avgInstArray;
+}
+
+$minDay = array();
+for($day = 0; $day < count($avgArray[0]); $day++){
+  $dayPrice = array();
+  for($i = 0; $i < count($avgArray); $i++){
+    if($avgArray[$i][$day][0] == 1){
+       array_push($dayPrice,$avgArray[$i][$day][1]);
+  }}
+  array_push($minDay, min($dayPrice))
+}
+
+$buy = array();
+$sell = array();
+for($day = 0; $day < count($avgArray[0]); $day++){
+  $buyDay = array();
+  $sellDay = array();
+  for($i = 0; $i < count($avgArray); $i++){
+    if($avgArray[$i][$day][0] == 1){
+      array_push($buyDay,array($i, $avgArray[$i][$day][1]));
+  }else{
+      array_push($sellDay,array($i, $avgArray[$i][$day][1]));
+  }}
+  array_push($buy, $buyDay);
+  array_push($sell, $sellDay);
+}
+
+$holdings = array();
+
+for($day = 201; $day < count($avgArray[0]); $day++){
+  for($stock = 0; $stock < count($sell[$day]); $stock++){
+    if(in_array($sell[$day][$stock][0], array_column($holdings,0))){
+      $qtIndex = array_search($sell[$day][$stock][0], array_column($holdings,0));
+      $cash += $sell[$day][$stock][1] * $holdings[$qtIndex][1];
+    }
+  }
+while($cash > $min){
+  $stock = array_rand($buy[$day]);
+  $cash -= $buy[$day][$stock[1]];
+  if(gettype($holdings[$stock[0]]) == gettype(array())){
+    $holdings[$stock[0]][1] += 1;
+  }else {
+    $holdings[$stock[0]][1] = 1;
+  }
+}
+}
+//holdings is [INSTRUMENT_ID, quantity]
+//lastprices is [INSTRUMENT_ID, price]
+//need to calculate the total vlaue of the current holdings using the last prices values and add it to the cash value
+echo "Profit: " . $profit;
+?>
