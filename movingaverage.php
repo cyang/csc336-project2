@@ -24,17 +24,8 @@ if ($r_1->num_rows > 0) {
 	echo "0 results";
 }
 
-$q_2 = "SELECT INSTRUMENT_ID, CLOSE_PRICE FROM STOCK_HISTORY WHERE TRADE_DATE = (select max(TRADE_DATE) from STOCK_HISTORY)";
-$r_2 = $db->query($q_1);
-
-$lastPrices = array();
-
-if ($r_2->num_rows > 0) {
-	while($row = $r_2->fetch_assoc()) {
-		  $stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
-	}}
-
-$cash = 10000.0;
+$cashStart = 10000.0;
+$cash = $cashStart;
 echo "Starting budget: ". $cash . "<br><br>";
 
 $avgArray = array();
@@ -96,8 +87,11 @@ while($cash > $min){
   }
 }
 }
-//holdings is [INSTRUMENT_ID, quantity]
-//lastprices is [INSTRUMENT_ID, price]
-//need to calculate the total vlaue of the current holdings using the last prices values and add it to the cash value
+$lastDay =  count($avgArray[0]) - 1;
+  for($stock = 0; $stock < count($sell[$lastDay]); $stock++){
+      $qtIndex = array_search($holdings[$stock][0], array_column($stockArray,0));
+      $cash += $holdings[$stock][1] * $stockArray[$qtIndex][$lastDay];
+  }
+$profit = $cash - $cashStart;
 echo "Profit: " . $profit;
 ?>
