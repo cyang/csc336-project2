@@ -32,9 +32,9 @@ $avgArray = array();
 for($i = 0; $i < count($stockArray); $i++){
   $priceArray = $stockArray[$i];
   $avgInstArray = array();
-  for($day = 0; $day < count($priceArray)); $day++){
-    $day50 = array_sum(array_slice ( $priceArray, $day-51, int $length = 50 ))/50;
-    $day200 = array_sum(array_slice ( $priceArray, $day-201, int $length = 200 ))/200;
+  for($day = 0; $day < count($priceArray); $day++){
+    $day50 = array_sum(array_slice ( $priceArray, $day-51, 50 ))/50;
+    $day200 = array_sum(array_slice ( $priceArray, $day-201, 200 ))/200;
     if($day50 > $day200){
       $avgInstArray[$day] = array(1, $priceArray[$day]);
     }else {
@@ -50,7 +50,7 @@ for($day = 0; $day < count($avgArray[0]); $day++){
     if($avgArray[$i][$day][0] == 1){
        array_push($dayPrice,$avgArray[$i][$day][1]);
   }}
-  array_push($minDay, min($dayPrice))
+  array_push($minDay, min($dayPrice));
 }
 
 $buy = array();
