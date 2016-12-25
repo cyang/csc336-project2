@@ -1,5 +1,9 @@
 <?php
 require "config.php";
+
+ini_set('memory_limit','2000M');
+ini_set('max_execution_time', 300);
+
 // Connection
 $db = new mysqli($host, $username, $password, "stockmarket");
 if ($db->connect_error) {
@@ -15,12 +19,11 @@ $stockArray = array();
 
 if ($r_1->num_rows > 0) {
 	while($row = $r_1->fetch_assoc()) {
-    if(gettype($stockArray[$row["INSTRUMENT_ID"]]) == gettype(array())){
-      $stockArray[$row["INSTRUMENT_ID"]][count($stockArray[$row["INSTRUMENT_ID"]])] = $row["CLOSE_PRICE"];
-    }else{
-		  $stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
-	}}
-} else {
+    		if(array_key_exists($row["INSTRUMENT_ID"], $stockArray)){
+     			 $stockArray[$row["INSTRUMENT_ID"]][count($stockArray[$row["INSTRUMENT_ID"]])] = $row["CLOSE_PRICE"];
+    		}else{
+			$stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
+}}} else {
 	echo "0 results";
 }
 
@@ -32,7 +35,7 @@ $avgArray = array();
 for($i = 0; $i < count($stockArray); $i++){
   $priceArray = $stockArray[$i];
   $avgInstArray = array();
-  for($day = 0; $day < count($priceArray); $day++){
+  for($day = 200; $day < count($priceArray); $day++){
     $day50 = array_sum(array_slice ( $priceArray, $day-51, 50 ))/50;
     $day200 = array_sum(array_slice ( $priceArray, $day-201, 200 ))/200;
     if($day50 > $day200){
@@ -40,7 +43,7 @@ for($i = 0; $i < count($stockArray); $i++){
     }else {
       $avgInstArray[$day] = array(0, $priceArray[$day]);
     }}
-  $avgArray[$i] = $avgInstArray;
+  $avgArray[$i] = $avgInstArray;d
 }
 
 $minDay = array();
@@ -70,7 +73,7 @@ for($day = 0; $day < count($avgArray[0]); $day++){
 
 $holdings = array();
 
-for($day = 201; $day < count($avgArray[0]); $day++){
+for($day = 0; $day < count($avgArray[0]); $day++){
   for($stock = 0; $stock < count($sell[$day]); $stock++){
     if(in_array($sell[$day][$stock][0], array_column($holdings,0))){
       $qtIndex = array_search($sell[$day][$stock][0], array_column($holdings,0));
@@ -80,7 +83,7 @@ for($day = 201; $day < count($avgArray[0]); $day++){
 while($cash > $min){
   $stock = array_rand($buy[$day]);
   $cash -= $buy[$day][$stock[1]];
-  if(gettype($holdings[$stock[0]]) == gettype(array())){
+  if(array_key_exists($stock[0], $holdings)){
     $holdings[$stock[0]][1] += 1;
   }else {
     $holdings[$stock[0]][1] = 1;
