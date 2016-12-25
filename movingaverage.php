@@ -2,7 +2,7 @@
 require "config.php";
 
 ini_set('memory_limit','2000M');
-ini_set('max_execution_time', 300);
+ini_set('max_execution_time', 3600);
 
 // Connection
 $db = new mysqli($host, $username, $password, "stockmarket");
@@ -18,13 +18,13 @@ $r_1 = $db->query($q_1);
 $stockArray = array();
 
 if ($r_1->num_rows > 0) {
-	while($row = $r_1->fetch_assoc()) {
-    		if(array_key_exists($row["INSTRUMENT_ID"], $stockArray)){
-     			 $stockArray[$row["INSTRUMENT_ID"]][count($stockArray[$row["INSTRUMENT_ID"]])] = $row["CLOSE_PRICE"];
-    		}else{
-			$stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
+        while($row = $r_1->fetch_assoc()) {
+                if(array_key_exists($row["INSTRUMENT_ID"], $stockArray)){
+                         $stockArray[$row["INSTRUMENT_ID"]][count($stockArray[$row["INSTRUMENT_ID"]])] = $row["CLOSE_PRICE"];
+                }else{
+                        $stockArray[$row["INSTRUMENT_ID"]] = array($row["CLOSE_PRICE"]);
 }}} else {
-	echo "0 results";
+        echo "0 results";
 }
 
 $cashStart = 10000.0;
@@ -35,15 +35,16 @@ $avgArray = array();
 for($i = 0; $i < count($stockArray); $i++){
   $priceArray = $stockArray[$i];
   $avgInstArray = array();
-  for($day = 200; $day < count($priceArray); $day++){
+  for($day = 201; $day < count($priceArray); $day++){
     $day50 = array_sum(array_slice ( $priceArray, $day-51, 50 ))/50;
     $day200 = array_sum(array_slice ( $priceArray, $day-201, 200 ))/200;
-    if($day50 > $day200){
+//    echo("inst: $i day: $day 50: $day50 200: $day200<br>");
+  if($day50 > $day200){
       $avgInstArray[$day] = array(1, $priceArray[$day]);
     }else {
       $avgInstArray[$day] = array(0, $priceArray[$day]);
     }}
-  $avgArray[$i] = $avgInstArray;d
+  $avgArray[$i] = $avgInstArray;
 }
 
 $minDay = array();
