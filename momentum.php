@@ -50,21 +50,21 @@ $profit = 0.0;
 for($day = 0; $day < count($stockArray); $day++){
   $priceArray = $stockArray[$day];
   //print_r(array_values($priceArray));
-  if($day % 10 == 0){
+  if($day % 30 == 0){
     //percentage decrease
-    if($priceArray[$day] > $priceArray[$day+1]){
-      $decrease = $priceArray[$day] - $priceArray[$day+1];
-      $per_decrease = $decrease % ($priceArray[$day] * 100);
+    if($priceArray[$day] > $priceArray[$day+30]){
+      $decrease = $priceArray[$day] - $priceArray[$day+30];
+      $per_decrease = $decrease / $priceArray[$day] * 100;
       echo "Percentage decrease, We should SELL: $per_decrease% \n";
 
 
     }
-    elseif ($priceArray[$day] == $priceArray[$day+1]) {
+    elseif ($priceArray[$day] == $priceArray[$day+30]) {
       echo "No percent change, Do Nothing \n";
     }
     else{
-      $increase = $priceArray[$day+1] - $priceArray[$day];
-      $per_increase = $increase % ($priceArray[$day] * 100);
+      $increase = $priceArray[$day+30] - $priceArray[$day];
+      $per_increase = $increase / $priceArray[$day] * 100;
       echo "Percentage Increase, We should BUY: $per_increase% \n";
 
       echo "Purchased stocks: <br>";
