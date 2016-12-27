@@ -57,7 +57,7 @@ for($day = 0; $day < count($stockArray); $day++){
     if($priceArray[$day] > $priceArray[$day+30]){
       $decrease = $priceArray[$day] - $priceArray[$day+30];
       $per_decrease = $decrease / $priceArray[$day] * 100;
-      if ($per_decrease > 3){
+      if ($per_decrease > 3.0){
         //sell
         echo "Percentage decrease, We should SELL: -$per_decrease% \n";
       }
@@ -69,9 +69,10 @@ for($day = 0; $day < count($stockArray); $day++){
       $increase = $priceArray[$day+30] - $priceArray[$day];
       $per_increase = $increase / $priceArray[$day] * 100;
       echo "Percentage Increase, We should BUY: +$per_increase% \n";
-      if($per_increase > 3){
+      if($per_increase > 3.0){
         //buy
         echo "Percentage Increase, We should BUY: +$per_increase% \n";
+
       }
     }
   }
