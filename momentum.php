@@ -45,7 +45,9 @@ if ($r_1->num_rows > 0) {
 $budget = CONSTANT_BUDGET;
 echo "Starting budget: ". $budget . "<br><br>";
 $profit = 0.0;
-
+$buy = array();
+$sell = array();
+$holdings = array();
 // for every 10 days, calculate percent change in open price and buy or sell
 for($day = 0; $day < count($stockArray); $day++){
   $priceArray = $stockArray[$day];
@@ -55,9 +57,10 @@ for($day = 0; $day < count($stockArray); $day++){
     if($priceArray[$day] > $priceArray[$day+30]){
       $decrease = $priceArray[$day] - $priceArray[$day+30];
       $per_decrease = $decrease / $priceArray[$day] * 100;
-      echo "Percentage decrease, We should SELL: $per_decrease% \n";
-
-
+      if ($per_decrease > 3){
+        //sell
+        echo "Percentage decrease, We should SELL: -$per_decrease% \n";
+      }
     }
     elseif ($priceArray[$day] == $priceArray[$day+30]) {
       echo "No percent change, Do Nothing \n";
@@ -65,20 +68,11 @@ for($day = 0; $day < count($stockArray); $day++){
     else{
       $increase = $priceArray[$day+30] - $priceArray[$day];
       $per_increase = $increase / $priceArray[$day] * 100;
-      echo "Percentage Increase, We should BUY: $per_increase% \n";
-
-      echo "Purchased stocks: <br>";
-      while ($budget > 0) {
-      	$rand = rand(0, 999);
-      	// Subtract from budget and calculate profit
-      	if ($budget - $stockArray[$rand][0] >=  0) {
-      		$budget -= $stockArray[$rand][0];
-      	} else { continue; }
-
-      	$profit += $stockArray[$rand][1] - $stockArray[$rand][0];
+      echo "Percentage Increase, We should BUY: +$per_increase% \n";
+      if($per_increase > 3){
+        //buy
+        echo "Percentage Increase, We should BUY: +$per_increase% \n";
       }
-      echo "<br>Budget left over: " . $budget . "<br>";
-      echo "Profit: " . $profit . "<br><br>";
     }
   }
 }

@@ -1,5 +1,5 @@
 <?php
-$host = "134.74.126.104";
+$host = "134.74.126.107";
 $username = "USERNAME";
 $password = "PASSWORD";
 $team_database = "F16336team5";
