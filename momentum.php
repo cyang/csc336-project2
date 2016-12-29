@@ -57,6 +57,7 @@ for($day = 0; $day < count($stockArray); $day++){
     if($priceArray[$day] > $priceArray[$day+30]){
       $decrease = $priceArray[$day] - $priceArray[$day+30];
       $per_decrease = $decrease / $priceArray[$day] * 100;
+
       if ($per_decrease > 3.0 && $budget > 0){
         //sell
         array_push($sell,$per_decrease);
@@ -76,14 +77,15 @@ for($day = 0; $day < count($stockArray); $day++){
         array_push($buy, $per_increase);
         $bought += $priceArray[$day];
         echo "Percentage Increase, We should BUY: +$per_increase% \n";
-
       }
     }
   }
 }
+
 $profit = $bought - $sold;
 echo " <br>";
 echo "Total Stocks Sold " . count($sell). "<br><br>";
 echo "Total Stocks Bought ". count($buy). "<br><br>";
 echo "Profit" . $profit;
+
 ?>
