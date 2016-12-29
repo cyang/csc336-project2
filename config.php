@@ -7,5 +7,5 @@ $team_database = "F16336team5";
 $db = new mysqli($host, $username, $password, $team_database);
 if ($db->connect_error) {
     die("Connection failed: " . $db->connect_error);
-} 
+}
 ?>
