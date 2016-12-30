@@ -107,6 +107,7 @@ for($day = 200; $day < count($avgArray[0]); $day++){
 		if(array_key_exists($i, $holdings)){
 			$cash += $price * $holdings[$i];
 			unset($holdings[$i]);
+			echo 'Instrument_ID Sold ' .$i. ' | Open Price '. $stockArray[$i][0]. ' | Closing Price '. $stockArray[$i][1] . '<br>';
 		}
 	}
 
@@ -119,6 +120,7 @@ for($day = 200; $day < count($avgArray[0]); $day++){
 		}else{
 			$holdings[$i] = 1;
 		}
+		echo 'Instrument ID Bought: '.$i. ' | Open Price ' . $stockArray[$i][0]. ' | Closing Price '. $stockArray[$i][1]. '<br>';
 	}
 }
 
