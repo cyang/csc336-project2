@@ -125,6 +125,7 @@ for($day = CONSTANT_PERIOD; $day < count($momentumArray[0]); $day+=CONSTANT_PERI
 			$cash += $price * $holdings[$i];
 			unset($holdings[$i]);
 		}
+		echo 'Instrument_ID Sold ' .$i. ' | Open Price '. $stockArray[$i][0]. ' | Closing Price '. $stockArray[$i][1] . '<br>';
 	}
 	
 	// Randomly buy a stock
@@ -136,6 +137,7 @@ for($day = CONSTANT_PERIOD; $day < count($momentumArray[0]); $day+=CONSTANT_PERI
 		}else{
 			$holdings[$i] = 1;
 		}
+		echo 'Instrument ID Bought: '.$i. ' | Open Price ' . $stockArray[$i][0]. ' | Closing Price '. $stockArray[$i][1]. '<br>';
 	}
 }
 
