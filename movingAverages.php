@@ -45,19 +45,32 @@ flush();
 ob_flush();
 $avgArray = array();
 
-for($i = 0; $i < count($stockArray); $i++){
-	$priceArray = $stockArray[$i];
-	$avgInstArray = array();
+if (file_exists("avgArray.json")) {
+	echo "avgArray.json exists! <br><br>";
+	flush();
+	ob_flush();	
+	$avgArray = json_decode(file_get_contents('avgArray.json'), true);
+} else {
+	echo "avgArray.json doesn't exist, will calculate avgArray and store in avgArray.json now <br><br>";
+	flush();
+	ob_flush();
 
-	// Check for opportunities to buy if the shorter day moving average is above the longer day moving average
-	for($day = 200; $day < count($priceArray); $day++){
-		$day50 = array_sum(array_slice ( $priceArray, $day-50, 50 ))/50;
-		$day200 = array_sum(array_slice ( $priceArray, $day-200, 200 ))/200;
+	for($i = 0; $i < count($stockArray); $i++){
+		$priceArray = $stockArray[$i];
+		$avgInstArray = array();
 
-		// Store the boolean value and the associated price for the day
-		$avgInstArray[$day] = array(($day50 > $day200 ? 1:0), $priceArray[$day]);
+		// Check for opportunities to buy if the shorter day moving average is above the longer day moving average
+		for($day = 200; $day < count($priceArray); $day++){
+			$day50 = array_sum(array_slice ( $priceArray, $day-50, 50 ))/50;
+			$day200 = array_sum(array_slice ( $priceArray, $day-200, 200 ))/200;
+
+			// Store the boolean value and the associated price for the day
+			$avgInstArray[$day] = array(($day50 > $day200 ? 1:0), $priceArray[$day]);
+		}
+		$avgArray[$i] = $avgInstArray;
 	}
-	$avgArray[$i] = $avgInstArray;
+	
+	file_put_contents("avgArray.json",json_encode($avgArray));
 }
 
 echo "6. Adding stocks to buy/sell list for each day, time: ".(microtime(true) - $starttime)." <br><br>";
